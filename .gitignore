@@ -1,0 +1,18 @@
+# ESP32S3DMX Library
+
+/examples/*/build/
+/examples/*/.vscode/
+*.pyc
+*.swp
+.DS_Store
+.development
+.vscode/
+__pycache__/
+build/
+dist/
+*.egg-info/
+.pio/
+.pioenvs/
+.piolibdeps/
+*.orig
+*~

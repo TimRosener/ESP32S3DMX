@@ -1,0 +1,44 @@
+name: Compile Examples
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        board:
+          - esp32:esp32:esp32
+          - esp32:esp32:esp32s2
+          - esp32:esp32:esp32s3
+        example:
+          - BasicReceive
+          - ChannelMonitor
+          - ChannelViewer
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      
+    - name: Install ESP32 Core
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install esp32:esp32
+        
+    - name: Install library
+      run: |
+        mkdir -p ~/Arduino/libraries
+        ln -s $PWD ~/Arduino/libraries/ESP32S3DMX
+        
+    - name: Compile example
+      run: |
+        arduino-cli compile --fqbn ${{ matrix.board }} \
+          --libraries ~/Arduino/libraries \
+          examples/${{ matrix.example }}

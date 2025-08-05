@@ -1,0 +1,32 @@
+#######################################
+# ESP32S3DMX Library Keywords
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ESP32S3DMX	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+read	KEYWORD2
+readChannels	KEYWORD2
+isConnected	KEYWORD2
+getPacketRate	KEYWORD2
+getPacketCount	KEYWORD2
+timeSinceLastPacket	KEYWORD2
+getLastPacketSize	KEYWORD2
+getBuffer	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+DMX_CHANNELS	LITERAL1
+DMX_BAUDRATE	LITERAL1
+DMX_TIMEOUT_MS	LITERAL1
