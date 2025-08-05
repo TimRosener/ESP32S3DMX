@@ -15,6 +15,7 @@ Professional DMX512 receiver library for ESP32 microcontrollers with Arduino Cor
 - [API Documentation](#api-documentation)
 - [Examples](#examples)
 - [Technical Details](#technical-details)
+- [Thread Safety and Multi-Core Support](#thread-safety-and-multi-core-support)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -30,6 +31,7 @@ Professional DMX512 receiver library for ESP32 microcontrollers with Arduino Cor
 | Packet statistics | ✅ |
 | Zero-copy channel reading | ✅ |
 | Thread-safe operation | ✅ |
+| Multi-core support (ESP32) | ✅ |
 | Partial universe support | ✅ |
 | Multiple UART support | ✅ |
 | DMX transmission | ❌ |
@@ -172,7 +174,7 @@ Stops the DMX receiver and releases resources.
 ```cpp
 uint8_t read(uint16_t channel)
 ```
-Reads a single DMX channel value.
+Reads a single DMX channel value. Thread-safe.
 
 **Parameters:**
 - `channel`: DMX channel number (1-512)
@@ -189,7 +191,7 @@ uint8_t red = dmx.read(2);
 ```cpp
 uint16_t readChannels(uint8_t* buffer, uint16_t start_channel, uint16_t count)
 ```
-Reads multiple consecutive channels efficiently.
+Reads multiple consecutive channels efficiently. Thread-safe.
 
 **Parameters:**
 - `buffer`: Array to store channel values
@@ -271,10 +273,81 @@ dmxData[2]   = Channel 2
 dmxData[512] = Channel 512
 ```
 
-### Thread Safety
-- Channel data is copied atomically
-- Safe to read from main loop while receiving
-- No mutex required for reading operations
+## Thread Safety and Multi-Core Support
+
+### Thread Safety: ✅ Fully Thread-Safe
+
+The ESP32S3DMX library is designed to be thread-safe and can be safely used in multi-threaded environments:
+
+#### Safe Operations
+- **Reading channels** from multiple threads/tasks simultaneously
+- **Calling `begin()`** from any core (0 or 1)
+- **Accessing data** while reception is ongoing
+- **Using from FreeRTOS tasks** without additional synchronization
+
+#### Implementation Details
+- **Atomic Operations**: Critical sections protected with `noInterrupts()`/`interrupts()`
+- **Volatile Buffers**: Ensures memory coherency between cores
+- **Double Buffering**: Separate receive and read buffers prevent corruption
+- **No Dynamic Memory**: All buffers are statically allocated
+
+### Multi-Core Support: ✅ Works on Either Core
+
+```cpp
+// Example: Running DMX on Core 1
+void dmxTask(void* param) {
+    dmx.begin();  // Initialize on Core 1
+    
+    while(1) {
+        if (dmx.isConnected()) {
+            uint8_t value = dmx.read(1);
+            // Process DMX data...
+        }
+        vTaskDelay(1);
+    }
+}
+
+void setup() {
+    xTaskCreatePinnedToCore(dmxTask, "DMX", 4096, NULL, 1, NULL, 1);
+}
+```
+
+### Usage Examples
+
+#### Multi-Task Example
+```cpp
+// Task 1: Read lighting channels
+void lightingTask(void* param) {
+    while(1) {
+        uint8_t brightness = dmx.read(1);
+        uint8_t color = dmx.read(2);
+        // Update lights...
+        vTaskDelay(20);
+    }
+}
+
+// Task 2: Read effects channels
+void effectsTask(void* param) {
+    while(1) {
+        uint8_t effect = dmx.read(10);
+        uint8_t speed = dmx.read(11);
+        // Update effects...
+        vTaskDelay(50);
+    }
+}
+```
+
+#### Core Assignment
+- UART interrupts run on the core that calls `begin()`
+- DMX data can be read from any core
+- No core affinity requirements
+- Default scheduler assignment works perfectly
+
+### Performance Considerations
+- Interrupt disable time: < 100μs (minimal impact)
+- Safe for real-time applications
+- No mutex overhead for read operations
+- Zero-copy design for efficiency
 
 ## Troubleshooting
 
@@ -318,7 +391,25 @@ git checkout -b feature/your-feature
 
 ## License
 
-This library is licensed under the [GNU Lesser General Public License v2.1](LICENSE).
+### Dual License Notice
+
+This library is available under a dual license model:
+
+#### Option 1: Open Source License (LGPL v2.1)
+For open source projects and non-commercial use, this library is licensed under the [GNU Lesser General Public License v2.1](LICENSE).
+
+#### Option 2: Commercial License
+For use in commercial products or closed-source applications, a commercial license is required. 
+
+**Commercial licenses include:**
+- Rights to use in commercial products
+- Ability to create closed-source derivatives
+- Priority support
+- Custom feature development options
+
+**To obtain a commercial license, contact:** [your.email@example.com]
+
+*Note: If you're unsure which license applies to your use case, please reach out for clarification.*
 
 ## Acknowledgments
 

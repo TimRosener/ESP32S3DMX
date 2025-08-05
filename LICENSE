@@ -1,18 +1,38 @@
-GNU LESSER GENERAL PUBLIC LICENSE
-Version 2.1, February 1999
+DUAL LICENSE NOTICE
+===================
 
-Copyright (C) 2024 ESP32S3DMX Contributors
+This software is available under a dual license model:
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+1. OPEN SOURCE LICENSE (LGPL v2.1)
+----------------------------------
+For open source and non-commercial use, this software is licensed under the
+GNU Lesser General Public License v2.1 (see LICENSE-LGPL.txt).
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
+This means you can:
+- Use the library in open source projects
+- Modify and redistribute under the same license
+- Use in non-commercial applications
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+2. COMMERCIAL LICENSE
+--------------------
+For commercial use in closed-source products, a separate commercial license
+is required.
+
+Commercial licenses allow:
+- Use in proprietary/closed-source products
+- Distribution without source code disclosure
+- Removal of attribution requirements
+- Priority support and updates
+- Custom feature development
+
+To obtain a commercial license, contact:
+[your.email@example.com]
+
+CHOOSING THE RIGHT LICENSE
+-------------------------
+- If your project is open source → Use LGPL v2.1
+- If your project is closed-source commercial → Purchase commercial license
+- If you're unsure → Contact us for clarification
+
+Copyright (c) 2024 [Your Name]
+All rights reserved.
